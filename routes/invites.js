@@ -14,8 +14,6 @@ router.get('/:code',function (req, res) {
       return res.send(500, 'Invite code not found');
     }
 
-    req.session.inviteCode = inviteCode;
-
     res.render('register', { inviteCode: inviteCode });
   });
 });
