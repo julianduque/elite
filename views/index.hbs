@@ -1,1 +1,7 @@
 home
+
+{{#each hackers}}
+  <h2>{{value.name}}</h2>
+  <img src="{{value.avatar}}" width="120" />
+  <a href="{{value.github}}">gh<a>
+{{/each}}

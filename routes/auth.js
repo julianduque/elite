@@ -7,7 +7,7 @@ var express        = require('express'),
     router         = express.Router();
 
 passport.serializeUser(function (user, done) {
-  done(null, user.username);
+  done(null, user);
 });
 
 passport.deserializeUser(function (username, done) {
@@ -20,7 +20,29 @@ passport.use(new GithubStrategy({
     clientID: config.clientID,
     clientSecret: config.clientSecret,
   }, function (accessToken, refreshToken, profile, done) {
-    done(null, profile);
+    var username = profile.username;
+
+    hackers.get(username, function (err, user) {
+      if (err || !user) {
+        // Create the user
+        var hacker = {
+          name: profile._json.name,
+          email: profile._json.email,
+          avatar: profile._json.avatar_url,
+          github: profile._json.html_url
+        };
+
+        hackers.put(username, hacker, function (err) {
+          if (err) {
+            return done(err);
+          }
+
+          done(null, username);
+        });
+      } else {
+        done(null, username);
+      }
+    });
   }
 ));
 
